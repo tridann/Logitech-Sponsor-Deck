@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@400;500;600;700&family=Barlow:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { background: #06070e; font-family: 'Barlow', sans-serif; color: #e0d8cc; width: 900px; margin: 0 auto; }
+.page { width: 900px; }
+
+.slide { width: 900px; min-height: 540px; position: relative; overflow: hidden; padding: 56px 64px; border-bottom: 2px solid rgba(0,114,188,0.12); }
+.bg-dark { background: #06070e; }
+.bg-panel { background: #07090f; }
+
+.grid-overlay { position: absolute; inset: 0; background-image: linear-gradient(rgba(0,114,188,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(0,114,188,0.04) 1px, transparent 1px); background-size: 36px 36px; pointer-events: none; }
+.glow-top { position: absolute; top: 0; left: 0; right: 0; height: 220px; background: radial-gradient(ellipse 80% 100% at 50% 0%, rgba(0,114,188,0.1) 0%, transparent 100%); pointer-events: none; }
+.glow-left { position: absolute; top: 0; left: 0; bottom: 0; width: 300px; background: radial-gradient(ellipse 100% 80% at 0% 50%, rgba(0,114,188,0.06) 0%, transparent 100%); pointer-events: none; }
+
+.stripe { height: 2px; background: linear-gradient(90deg, #06070e 0%, #0072bc 40%, #00a1e0 50%, #0072bc 60%, #06070e 100%); }
+
+.label { font-family: 'Barlow Condensed', sans-serif; font-size: 9px; font-weight: 700; letter-spacing: 5px; text-transform: uppercase; color: #0072bc; display: flex; align-items: center; gap: 10px; margin-bottom: 20px; }
+.label::after { content: ''; flex: 1; height: 1px; background: rgba(0,114,188,0.25); }
+
+.display { font-family: 'Bebas Neue', sans-serif; letter-spacing: 6px; line-height: 0.92; }
+.blue { color: #00a1e0; }
+.light { color: #e0d8cc; }
+.body-sm { font-size: 13px; color: #8a9ab8; line-height: 1.75; }
+.body-sm strong { color: #c0c8d8; font-weight: 500; }
+
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 36px; }
+.three-col { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+
+.stat-block { background: #0a0d1a; border-top: 2px solid #0072bc; padding: 18px 20px; }
+.stat-label { font-family: 'Barlow Condensed', sans-serif; font-size: 9px; font-weight: 700; letter-spacing: 3px; color: #6a88a8; text-transform: uppercase; margin-bottom: 6px; }
+.stat-val { font-family: 'Bebas Neue', sans-serif; font-size: 36px; letter-spacing: 2px; color: #00a1e0; line-height: 1; }
+.stat-note { font-size: 11px; color: #6a88a8; margin-top: 4px; }
+
+.check-list { list-style: none; display: flex; flex-direction: column; gap: 9px; }
+.check-list li { display: flex; align-items: flex-start; gap: 10px; font-size: 13px; color: #8a9ab8; line-height: 1.5; }
+.check-list li::before { content: ''; width: 4px; height: 4px; border-radius: 50%; background: #0072bc; flex-shrink: 0; margin-top: 6px; }
+.check-list li strong { color: #c0c8d8; font-weight: 500; }
+
+.callout { background: #0a0d1a; border-left: 2px solid #0072bc; padding: 16px 20px; margin-top: 16px; }
+.callout p { font-size: 12px; color: #6a80a0; line-height: 1.7; }
+.callout p strong { color: #c0c8d8; font-weight: 500; }
+
+.callout-gold { background: #0c0d14; border-left: 2px solid #b48c3c; padding: 16px 20px; margin-top: 16px; }
+.callout-gold p { font-size: 12px; color: #8a7840; line-height: 1.7; }
+.callout-gold p strong { color: #d4a84c; font-weight: 500; }
+
+.heading { font-family: 'Bebas Neue', sans-serif; font-size: 38px; letter-spacing: 3px; color: #e0d8cc; line-height: 1; margin-bottom: 20px; }
+.heading em { color: #00a1e0; font-style: normal; }
+
+/* TIER CARDS */
+.tier { background: #0a0d1a; border: 0.5px solid rgba(255,255,255,0.05); padding: 24px 20px; position: relative; overflow: hidden; }
+.tier-title { border: 1px solid rgba(0,114,188,0.35); background: rgba(0,114,188,0.05); }
+.tier-top { height: 3px; margin: -24px -20px 20px; }
+.tier-top-title { background: linear-gradient(90deg, #0072bc, #00a1e0, #0072bc); }
+.tier-top-gold { background: #b48c3c; }
+.tier-top-silver { background: #8a96b0; }
+.tier-top-bronze { background: #8b5e3c; }
+.tier-name { font-family: 'Bebas Neue', sans-serif; font-size: 24px; letter-spacing: 4px; line-height: 1; margin-bottom: 4px; }
+.tier-price { font-family: 'Barlow Condensed', sans-serif; font-size: 12px; font-weight: 600; letter-spacing: 2px; color: #6a88a8; margin-bottom: 14px; }
+.tier-divider { height: 1px; background: rgba(255,255,255,0.04); margin: 14px 0; }
+.perk { display: flex; align-items: flex-start; gap: 8px; font-size: 11px; color: #6a80a0; line-height: 1.5; margin-bottom: 7px; }
+.perk:last-child { margin-bottom: 0; }
+.perk::before { content: ''; width: 3px; height: 3px; border-radius: 50%; background: #0072bc; flex-shrink: 0; margin-top: 5px; }
+.perk strong { color: #c0c8d8; font-weight: 500; }
+.featured-badge { position: absolute; top: 14px; right: 14px; font-family: 'Barlow Condensed', sans-serif; font-size: 9px; font-weight: 700; letter-spacing: 2px; color: #00a1e0; border: 1px solid rgba(0,161,224,0.3); padding: 2px 8px; text-transform: uppercase; }
+
+/* INGAME CARD */
+.ingame-card { background: #0a0d1a; border: 1px solid rgba(180,140,60,0.25); padding: 20px; position: relative; }
+.ingame-badge { position: absolute; top: -10px; left: 20px; font-family: 'Barlow Condensed', sans-serif; font-size: 9px; font-weight: 700; letter-spacing: 3px; color: #b48c3c; background: #07090f; padding: 0 10px; text-transform: uppercase; }
+.ingame-title { font-family: 'Bebas Neue', sans-serif; font-size: 22px; letter-spacing: 3px; color: #d4a84c; margin-bottom: 10px; }
+
+/* SEGMENT CARDS */
+.segment { background: #0a0d1a; border: 0.5px solid rgba(255,255,255,0.05); padding: 14px 16px; margin-bottom: 8px; }
+.segment:last-child { margin-bottom: 0; }
+.segment-name { font-family: 'Barlow Condensed', sans-serif; font-size: 12px; font-weight: 700; letter-spacing: 2px; color: #00a1e0; text-transform: uppercase; margin-bottom: 4px; }
+.segment-desc { font-size: 11px; color: #6a88a8; line-height: 1.5; }
+
+.why-card { background: #0a0d1a; border: 0.5px solid rgba(255,255,255,0.05); padding: 18px; }
+.why-num { font-family: 'Bebas Neue', sans-serif; font-size: 32px; color: rgba(0,114,188,0.18); line-height: 1; margin-bottom: 6px; }
+.why-title { font-size: 13px; font-weight: 500; color: #c0c8d8; margin-bottom: 5px; }
+.why-desc { font-size: 11px; color: #6a88a8; line-height: 1.6; }
+
+.slide-footer { position: absolute; bottom: 0; left: 0; right: 0; padding: 10px 64px; display: flex; justify-content: space-between; align-items: center; border-top: 1px solid rgba(0,114,188,0.06); }
+.sf-left { font-size: 9px; color: #5a7898; letter-spacing: 1px; font-family: 'Barlow Condensed', sans-serif; }
+.sf-right { font-family: 'Bebas Neue', sans-serif; font-size: 11px; letter-spacing: 3px; color: rgba(0,114,188,0.18); }
+.slide-num { font-family: 'Bebas Neue', sans-serif; font-size: 11px; color: rgba(0,114,188,0.18); letter-spacing: 2px; }
+
+.precedent-card { background: #0a0d1a; border: 0.5px solid rgba(255,255,255,0.05); padding: 18px; }
+.precedent-label { font-family: 'Barlow Condensed', sans-serif; font-size: 9px; font-weight: 700; letter-spacing: 3px; color: #6a88a8; text-transform: uppercase; margin-bottom: 8px; }
+.precedent-title { font-family: 'Bebas Neue', sans-serif; font-size: 20px; letter-spacing: 2px; color: #00a1e0; margin-bottom: 6px; }
+.precedent-desc { font-size: 12px; color: #6a80a0; line-height: 1.6; }
+</style>
+</head>
+<body>
+<div class="page">
+
+<!-- SLIDE 1, COVER -->
+<div class="slide bg-dark" style="min-height:580px;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding-bottom:60px">
+  <div class="grid-overlay"></div>
+  <div class="glow-top"></div>
+  <div style="position:relative;z-index:2">
+    <div style="font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:600;letter-spacing:6px;color:#7a90b0;text-transform:uppercase;margin-bottom:24px">Partnership Proposal · 2026</div>
+    <div class="display" style="font-size:72px;color:#00a1e0">Logitech G</div>
+    <div class="display" style="font-size:48px;color:#e0d8cc;margin-top:4px">× Deadlock LAN</div>
+    <div style="font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:600;letter-spacing:10px;color:#7a90b0;text-transform:uppercase;margin-top:12px">Title Sponsor · Official Peripherals Partner</div>
+    <div style="width:120px;height:1px;background:rgba(0,114,188,0.3);margin:28px auto"></div>
+    <div style="font-size:12px;color:#7a90b0;letter-spacing:2px;font-family:'Barlow Condensed',sans-serif;text-transform:uppercase">First Deadlock LAN in the United States · June 27–28, 2026</div>
+    <div style="margin-top:32px;display:flex;justify-content:center;gap:32px">
+      <div style="text-align:center">
+        <div class="display" style="font-size:26px;color:#00a1e0">Jun 27–28</div>
+        <div style="font-size:9px;color:#7a90b0;letter-spacing:3px;font-family:'Barlow Condensed',sans-serif;text-transform:uppercase;margin-top:2px">Event Date</div>
+      </div>
+      <div style="width:1px;background:rgba(255,255,255,0.04)"></div>
+      <div style="text-align:center">
+        <div class="display" style="font-size:26px;color:#00a1e0">San Jose</div>
+        <div style="font-size:9px;color:#7a90b0;letter-spacing:3px;font-family:'Barlow Condensed',sans-serif;text-transform:uppercase;margin-top:2px">California</div>
+      </div>
+      <div style="width:1px;background:rgba(255,255,255,0.04)"></div>
+      <div style="text-align:center">
+        <div class="display" style="font-size:26px;color:#00a1e0">6–8</div>
+        <div style="font-size:9px;color:#7a90b0;letter-spacing:3px;font-family:'Barlow Condensed',sans-serif;text-transform:uppercase;margin-top:2px">Teams</div>
+      </div>
+      
+      <div style="width:1px;background:rgba(255,255,255,0.04)"></div>
+      <div style="text-align:center">
+        <div class="display" style="font-size:26px;color:#00a1e0">Live</div>
+        <div style="font-size:9px;color:#7a90b0;letter-spacing:3px;font-family:'Barlow Condensed',sans-serif;text-transform:uppercase;margin-top:2px">Streamed</div>
+      </div>
+    </div>
+    <div style="margin-top:40px;font-size:10px;color:#6a88a8;letter-spacing:2px;font-family:'Barlow Condensed',sans-serif;text-transform:uppercase">Organized by Tridanium · Hosted by Guildhouse · All details subject to confirmation</div>
+  </div>
+</div>
+<div class="stripe"></div>
+
+<!-- SLIDE 2, THE FIT -->
+<div class="slide bg-panel" style="padding-bottom:80px">
+  <div class="grid-overlay"></div>
+  <div class="label">The Partnership</div>
+  <div class="two-col">
+    <div>
+      <div class="heading">Logitech G<br>+ <em>Deadlock</em></div>
+      <p class="body-sm">Deadlock is a <strong>Valve PC game</strong>, the same ecosystem that built Counter-Strike and Dota 2. Its competitive player base is Logitech G's core audience: <strong>PC gaming enthusiasts</strong> who invest in quality peripherals and take their setup seriously.</p>
+      <p class="body-sm" style="margin-top:12px">With Logitech G now an <strong>official Guildhouse partner</strong>, this event is a natural extension of that relationship, bringing Logitech G into the first ever Deadlock LAN in the US as a founding sponsor of the game's competitive history.</p>
+      <div class="callout">
+        <p>Deadlock's open beta is approaching. <strong>Brands that establish presence now become synonymous with the game's competitive scene.</strong> No peripherals sponsor has claimed this space yet, the category is open.</p>
+      </div>
+    </div>
+    <div>
+      <div class="three-col" style="grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px">
+        <div class="stat-block">
+          <div class="stat-label">Event</div>
+          <div class="stat-val">First</div>
+          <div class="stat-note">US Deadlock LAN</div>
+        </div>
+        <div class="stat-block">
+          <div class="stat-label">Players</div>
+          <div class="stat-val">36–48</div>
+          <div class="stat-note">On LAN competing</div>
+        </div>
+        <div class="stat-block">
+          <div class="stat-label">Venue</div>
+          <div class="stat-val">18K</div>
+          <div class="stat-note">Sq ft · San Jose CA</div>
+        </div>
+        <div class="stat-block">
+          <div class="stat-label">Broadcast</div>
+          <div class="stat-val">Live</div>
+          <div class="stat-note">Stream + VOD</div>
+        </div>
+      </div>
+      <div style="background:#0a0d1a;border:0.5px solid rgba(255,255,255,0.05);padding:18px">
+        <div style="font-family:'Barlow Condensed',sans-serif;font-size:9px;font-weight:700;letter-spacing:3px;color:#7a90b0;text-transform:uppercase;margin-bottom:10px">Audience Profile</div>
+        <ul class="check-list">
+          <li>PC gaming enthusiasts, Logitech G's primary market</li>
+          <li>Competitive players who invest in quality gear</li>
+          <li>18–30 demographic with gaming disposable income</li>
+          <li>Content consumers, stream viewers, clips, socials</li>
+          <li>Community influencers who recommend gear to peers</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="slide-footer">
+    <div class="sf-left">Guildhouse · 420 S First St · San Jose CA · guildhouse.gg</div>
+    <div class="slide-num">02</div>
+    <div class="sf-right">Logitech G × Deadlock LAN 2026</div>
+  </div>
+</div>
+<div class="stripe"></div>
+
+<!-- SLIDE 3, INDUSTRY PRECEDENT -->
+<div class="slide bg-dark" style="padding-bottom:80px">
+  <div class="grid-overlay"></div>
+  <div class="glow-left"></div>
+  <div class="label">Proven in Deadlock</div>
+  <div class="heading">Brands Are <em>Already Here</em></div>
+  <div class="two-col">
+    <div>
+      <p class="body-sm" style="margin-bottom:20px">The Deadlock competitive scene has already attracted major brand investment, proving audience quality, community passion, and sponsorship viability before mainstream awareness hits.</p>
+      <div class="precedent-card" style="margin-bottom:12px">
+        <div class="precedent-label">Proven Precedent</div>
+        <div class="precedent-title">Trolli × Deadlock Night Shift</div>
+        <div class="precedent-desc">Trolli USA sponsored a <strong>$20,000 combined prize pool</strong> across NA and EU tournaments organized by Deadlock Night Shift, the premier Deadlock production org. The partnership went beyond traditional sponsorship: DNS created <strong>custom in-game branded assets</strong>, a downloadable Trolli midboss mod that replaced in-game characters with Trolli branding, visible on every stream, in every clip, permanently in VODs. A candy brand found meaningful ROI in competitive Deadlock. A global peripherals leader has an even stronger case.</div>
+      </div>
+      <div class="callout">
+        <p>If Trolli can fund a $20K Deadlock tournament and create branded in-game assets, <strong>Logitech G as a native PC gaming brand has a far more natural and powerful fit</strong> with this audience and this game.</p>
+      </div>
+    </div>
+    <div>
+      <div style="font-family:'Barlow Condensed',sans-serif;font-size:9px;font-weight:700;letter-spacing:3px;color:#7a90b0;text-transform:uppercase;margin-bottom:12px">Why This Matters for Logitech G</div>
+      <ul class="check-list" style="margin-bottom:20px">
+        <li><strong>Proof of concept</strong>, major brands have already invested at the $10–20K level in Deadlock esports</li>
+        <li><strong>Community receptivity</strong>, Deadlock players embraced the Trolli brand activation enthusiastically</li>
+        <li><strong>Creative space</strong>, in-game branded content is possible in a way no other title currently allows</li>
+        <li><strong>Scene timing</strong>, this was before open beta. The audience is about to multiply significantly</li>
+      </ul>
+      <div style="background:#0a0d1a;border:0.5px solid rgba(255,255,255,0.05);padding:18px">
+        <div style="font-family:'Barlow Condensed',sans-serif;font-size:9px;font-weight:700;letter-spacing:3px;color:#7a90b0;text-transform:uppercase;margin-bottom:10px">Our Advantage Over DNS × Trolli</div>
+        <ul class="check-list">
+          <li><strong>In-person LAN</strong>, physical presence, not just online</li>
+          <li><strong>Guildhouse venue</strong>, professional production, 18K sq ft</li>
+          <li><strong>Bay Area audience</strong>, tech-forward, PC gaming native</li>
+          <li><strong>First US LAN ever</strong>, historic milestone branding</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="slide-footer">
+    <div class="sf-left">Guildhouse · 420 S First St · San Jose CA · guildhouse.gg</div>
+    <div class="slide-num">03</div>
+    <div class="sf-right">Logitech G × Deadlock LAN 2026</div>
+  </div>
+</div>
+<div class="stripe"></div>
+
+<div class="stripe"></div>
+
+<!-- SLIDE 5, TIERS -->
+<div class="slide bg-dark" style="padding-bottom:80px">
+  <div class="grid-overlay"></div>
+  <div class="label">Partnership Packages</div>
+  <div class="heading">Choose Your <em>Level</em></div>
+  <p style="font-size:12px;color:#7a90b0;margin-bottom:24px;letter-spacing:1px">All packages are exclusive within their category · Custom packages available on request</p>
+
+  <div style="display:grid;grid-template-columns:1.3fr 1fr 1fr 1fr;gap:12px">
+
+    <div class="tier tier-title">
+      <div class="featured-badge">Recommended</div>
+      <div class="tier-top tier-top-title"></div>
+      <div class="tier-name blue">Title Sponsor</div>
+      <div class="tier-price">Custom Pricing</div>
+      <div class="tier-divider"></div>
+      <div class="perk"><strong>"[Logitech G] Deadlock LAN 2026"</strong>, event named after your brand</div>
+      <div class="perk">Top billing on <strong>all materials</strong>, overlays, graphics, announcements</div>
+      <div class="perk"><strong>All player headsets</strong> on competing stations</div>
+      <div class="perk"><strong>Play of the Game + MVP Award</strong> ownership</div>
+      <div class="perk"><strong>Player interviews</strong> segment</div>
+      <div class="perk"><strong>Opening + closing ceremony</strong> branding</div>
+      <div class="perk"><strong>Sponsor booth</strong>, premium floor placement</div>
+      <div class="perk"><strong>First right of refusal</strong> for all future events</div>
+      <div class="perk">All Gold + Silver perks included</div>
+    </div>
+
+    <div class="tier">
+      <div class="tier-top tier-top-gold"></div>
+      <div class="tier-name" style="color:#b48c3c">Gold</div>
+      <div class="tier-price">Starting at $2,000</div>
+      <div class="tier-divider"></div>
+      <div class="perk"><strong>Named segment</strong> ownership</div>
+      <div class="perk"><strong>Player headsets</strong> on stream</div>
+      <div class="perk">Sponsor booth on floor</div>
+      <div class="perk">Large overlay logo</div>
+      <div class="perk">Social feature post</div>
+      <div class="perk">All Silver perks</div>
+    </div>
+
+    <div class="tier">
+      <div class="tier-top tier-top-silver"></div>
+      <div class="tier-name" style="color:#8a96b0">Silver</div>
+      <div class="tier-price">Starting at $1,000</div>
+      <div class="tier-divider"></div>
+      <div class="perk">Medium overlay logo</div>
+      <div class="perk">Broadcast shoutout</div>
+      <div class="perk">Social media mention</div>
+      <div class="perk">Logo on event graphics</div>
+      <div class="perk">All Bronze perks</div>
+    </div>
+
+    <div class="tier">
+      <div class="tier-top tier-top-bronze"></div>
+      <div class="tier-name" style="color:#8b5e3c">Bronze</div>
+      <div class="tier-price">Starting at $500</div>
+      <div class="tier-divider"></div>
+      <div class="perk">Small overlay logo</div>
+      <div class="perk">Listed on event page</div>
+      <div class="perk">Community shoutout</div>
+    </div>
+
+  </div>
+
+  <div style="margin-top:16px;background:#0a0d1a;border:0.5px solid rgba(255,255,255,0.05);padding:14px 18px">
+    <p style="font-size:11px;color:#6a88a8;line-height:1.6">All packages are starting points. We welcome conversations about <strong>custom activations, product sponsorship in lieu of cash, hybrid deals,</strong> or any other structure that works for Logitech G. The goal is a partnership that delivers real value, let's build something that fits.</p>
+  </div>
+  <div class="slide-footer">
+    <div class="sf-left">Guildhouse · 420 S First St · San Jose CA · guildhouse.gg</div>
+    <div class="slide-num">04</div>
+    <div class="sf-right">Logitech G × Deadlock LAN 2026</div>
+  </div>
+</div>
+<div class="stripe"></div>
+
+<!-- SLIDE 6, WHY NOW -->
+<div class="slide bg-panel" style="padding-bottom:80px">
+  <div class="grid-overlay"></div>
+  <div class="label">First Mover Advantage</div>
+  <div class="heading">Why <em>Now</em></div>
+  <div class="three-col" style="margin-bottom:20px">
+    <div class="why-card">
+      <div class="why-num">01</div>
+      <div class="why-title">Valve pedigree</div>
+      <div class="why-desc">Counter-Strike and Dota 2 are the most successful PC esports ever made. Logitech G is embedded in both. Deadlock carries the same DNA, built by the same team.</div>
+    </div>
+    <div class="why-card">
+      <div class="why-num">02</div>
+      <div class="why-title">Open beta incoming</div>
+      <div class="why-desc">Deadlock's player base is about to expand significantly. Brands that establish presence now will be remembered as founding partners when the scene explodes.</div>
+    </div>
+    <div class="why-card">
+      <div class="why-num">03</div>
+      <div class="why-title">Category still open</div>
+      <div class="why-desc">No peripherals brand has claimed the Deadlock space. Logitech G gets to own that identity in the community before any competitor moves.</div>
+    </div>
+    <div class="why-card">
+      <div class="why-num">04</div>
+      <div class="why-title">Historic first event</div>
+      <div class="why-desc">The first US Deadlock LAN. Logitech G's name on that moment is permanent brand history in a scene that is only going to grow.</div>
+    </div>
+    <div class="why-card">
+      <div class="why-num">05</div>
+      <div class="why-title">Guildhouse partnership</div>
+      <div class="why-desc">Logitech G is already a Guildhouse partner. This event is a natural extension, activating that relationship in an exciting new competitive context.</div>
+    </div>
+    <div class="why-card">
+      <div class="why-num">06</div>
+      <div class="why-title">Recurring series</div>
+      <div class="why-desc">Designed to grow into a seasonal circuit. Early partners lock in preferred rates and first right of refusal as prize pools and audiences compound.</div>
+    </div>
+  </div>
+  <div class="slide-footer">
+    <div class="sf-left">Guildhouse · 420 S First St · San Jose CA · guildhouse.gg</div>
+    <div class="slide-num">05</div>
+    <div class="sf-right">Logitech G × Deadlock LAN 2026</div>
+  </div>
+</div>
+<div class="stripe"></div>
+
+<!-- SLIDE 7, CTA -->
+<div class="slide bg-dark" style="min-height:420px;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding-bottom:80px">
+  <div class="grid-overlay"></div>
+  <div class="glow-top"></div>
+  <div style="position:relative;z-index:2;width:100%">
+    <div style="font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:600;letter-spacing:5px;color:#7a90b0;text-transform:uppercase;margin-bottom:20px">Let's Talk</div>
+    <div class="display light" style="font-size:52px">Be Part of<br><span class="blue">Something Historic</span></div>
+    <div style="width:80px;height:1px;background:rgba(0,114,188,0.3);margin:24px auto"></div>
+    <p style="font-size:13px;color:#7a90b0;max-width:520px;margin:0 auto;line-height:1.75">We're building the first Deadlock LAN in the US and we'd love Logitech G as our title partner. One sponsor, maximum visibility, historic first event. All package details are flexible, let's find what works.</p>
+
+    <div style="display:flex;justify-content:center;gap:16px;margin-top:36px;flex-wrap:wrap">
+      <div style="background:#0a0d1a;border:1px solid rgba(0,114,188,0.2);padding:18px 24px;text-align:left;min-width:170px">
+        <div style="font-family:'Barlow Condensed',sans-serif;font-size:9px;font-weight:700;letter-spacing:3px;color:#7a90b0;text-transform:uppercase;margin-bottom:6px">Organizer</div>
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:3px;color:#00a1e0">Tridanium</div>
+        <div style="font-size:10px;color:#7a90b0;margin-top:3px"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="dda9afb4b9bcb3b4a8b09dbab0bcb4b1f3beb2b0">[email&#160;protected]</a></div>
+      </div>
+      <div style="background:#0a0d1a;border:1px solid rgba(0,114,188,0.2);padding:18px 24px;text-align:left;min-width:170px">
+        <div style="font-family:'Barlow Condensed',sans-serif;font-size:9px;font-weight:700;letter-spacing:3px;color:#7a90b0;text-transform:uppercase;margin-bottom:6px">Venue Partner</div>
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:3px;color:#00a1e0">Guildhouse</div>
+        <div style="font-size:10px;color:#7a90b0;margin-top:3px">guildhouse.gg · San Jose, CA</div>
+      </div>
+      <div style="background:#0a0d1a;border:1px solid rgba(0,114,188,0.2);padding:18px 24px;text-align:left;min-width:170px">
+        <div style="font-family:'Barlow Condensed',sans-serif;font-size:9px;font-weight:700;letter-spacing:3px;color:#7a90b0;text-transform:uppercase;margin-bottom:6px">Event Date</div>
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:3px;color:#00a1e0">June 27–28</div>
+        <div style="font-size:10px;color:#7a90b0;margin-top:3px">2026 · San Jose, CA</div>
+      </div>
+    </div>
+    <div style="margin-top:32px;font-size:10px;color:#6a88a8;letter-spacing:2px;font-family:'Barlow Condensed',sans-serif;text-transform:uppercase">All details subject to confirmation · In-game assets subject to feasibility</div>
+  </div>
+  <div class="slide-footer">
+    <div class="sf-left">Guildhouse · 420 S First St · San Jose CA · guildhouse.gg</div>
+    <div class="sl
